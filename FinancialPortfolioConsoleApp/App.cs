@@ -20,7 +20,9 @@ namespace FinancialPortfolioConsoleApp
             {
                 Console.WriteLine("Выберите действие: ");
                 Console.WriteLine("1 - создать пользователя");
-                Console.WriteLine("2 - выйти");
+                Console.WriteLine("2 - удалить пользователя");
+                Console.WriteLine("3 - вывести всех пользователей");
+                Console.WriteLine("4 - выйти");
 
                 if (int.TryParse(Console.ReadLine(), out int result))
                 {
@@ -31,6 +33,14 @@ namespace FinancialPortfolioConsoleApp
                             break;
 
                         case 2:
+                            _userController.RemoveUser();
+                            break;
+
+                        case 3:
+                            _userController.GetAllUsers();
+                            break;
+
+                        case 4:
                             Environment.Exit(0);
                             break;
 
@@ -42,7 +52,8 @@ namespace FinancialPortfolioConsoleApp
                 else
                 {
                     Console.WriteLine("Введите корректный ответ");
-                }  
+                }
+                Console.WriteLine();
             }
         }
     }
