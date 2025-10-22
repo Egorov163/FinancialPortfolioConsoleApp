@@ -6,8 +6,8 @@ namespace FinancialPortfolioConsoleApp.BL.Data.Repositories
 {
     public abstract class BaseRepository<DbModel> : IBaseRepository<DbModel> where DbModel : BaseModel
     {
-        private readonly AppDbContext _appDbContext;
-        private readonly DbSet<DbModel> _entities;
+        protected readonly AppDbContext _appDbContext;
+        protected readonly DbSet<DbModel> _entities;
         public BaseRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
