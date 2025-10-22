@@ -23,5 +23,13 @@ namespace FinancialPortfolioConsoleApp.BL.Controllers
         {
             _userService.GetAllUsers();
         }
+        public void Login()
+        {
+            _userService.Login();
+        }
+        public void Logout()
+        {
+            _userService.Logout();
+        }
     }
 }

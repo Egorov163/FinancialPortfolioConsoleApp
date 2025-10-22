@@ -6,30 +6,29 @@ namespace FinancialPortfolioConsoleApp.BL.Services
     public class UserService
     {
         private readonly UserRepository _userRepository;
+        private readonly AuthService _authService;
 
-        public UserService(UserRepository userRepository)
+        public UserService(UserRepository userRepository, AuthService authService)
         {
             _userRepository = userRepository;
+            _authService = authService;
         }
 
+        public UserModel? GetCurrentUser()
+        {
+            return _authService.CurrentUser;
+        }
         public void AddUser()
         {
-            Console.WriteLine("Введите имя пользователя: ");
-            var name = Console.ReadLine();
-
-            Console.WriteLine("Введите пароль: ");
-            var password = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
-            {
-                Console.WriteLine("Вы не заполнили имя или пароль");
-            }
-            else
-            {
-                var user = new UserModel { Name = name, Password = password };
-                _userRepository.Add(user);
-                Console.WriteLine($"Пользователь {name} успешно создан!");
-            }
+            _authService.Registration();
+        }
+        public void Login()
+        {
+            _authService.Login();
+        }
+        public void Logout()
+        {
+            _authService.Logout();
         }
         public void RemoveUser()
         {
@@ -39,6 +38,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             if (int.TryParse(idStr, out int id))
             {
                 _userRepository.Remove(id);
+                Console.WriteLine();
             }
         }
         public void GetAllUsers()
@@ -47,6 +47,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
 
             if (usersList.Any())
             {
+                Console.WriteLine("\nНа данный момент зарегистрированы следующие пользователи: ");
                 foreach (var user in usersList)
                 {
                     Console.WriteLine($"Имя - {user.Name} Id - {user.Id}");

@@ -7,9 +7,14 @@ namespace FinancialPortfolioConsoleApp
 {
     public class App
     {
+        // Контексты.
         private AppDbContext _appDbContext => new AppDbContext();
+        // Репозитории.
         private UserRepository _userRepository => new UserRepository(_appDbContext);
-        private UserService _userService => new UserService(_userRepository);
+        // Сервисы.
+        private AuthService _authService => new AuthService(_userRepository);
+        private UserService _userService => new UserService(_userRepository, _authService);
+        // Контроллеры.
         private UserController _userController => new UserController(_userService);
 
         public void Start()
@@ -22,7 +27,9 @@ namespace FinancialPortfolioConsoleApp
                 Console.WriteLine("1 - создать пользователя");
                 Console.WriteLine("2 - удалить пользователя");
                 Console.WriteLine("3 - вывести всех пользователей");
-                Console.WriteLine("4 - выйти");
+                Console.WriteLine("4 - аутентификация");
+                Console.WriteLine("5 - выйти из аккаунта");
+                Console.WriteLine("6 - выйти");
 
                 if (int.TryParse(Console.ReadLine(), out int result))
                 {
@@ -41,6 +48,14 @@ namespace FinancialPortfolioConsoleApp
                             break;
 
                         case 4:
+                            _userController.Login();
+                            break;
+
+                        case 5:
+                            _userController.Logout();
+                            break;
+
+                        case 6:
                             Environment.Exit(0);
                             break;
 
