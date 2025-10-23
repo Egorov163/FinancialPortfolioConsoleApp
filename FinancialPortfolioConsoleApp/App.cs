@@ -17,6 +17,9 @@ namespace FinancialPortfolioConsoleApp
         // Контроллеры.
         private UserController _userController => new UserController(_userService);
 
+        /// <summary>
+        /// Запустить приложение.
+        /// </summary>
         public void Start()
         {
             Console.WriteLine("Вас приветствует приложение Финансовый портфель!");
