@@ -7,6 +7,6 @@ namespace FinancialPortfolioConsoleApp.BL.Interfaces
         void Add(DbModel entity);
         List<DbModel> GetAll();
         DbModel? GetById(int id);
-        void Remove(int id);
+        bool Remove(int id);
     }
 }

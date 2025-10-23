@@ -97,6 +97,9 @@ namespace FinancialPortfolioConsoleApp.BL.Services
 
             return false;
         }
+        /// <summary>
+        /// Выйти из аккаунта.
+        /// </summary>
         public void Logout()
         {
             if (CurrentUser is null)
