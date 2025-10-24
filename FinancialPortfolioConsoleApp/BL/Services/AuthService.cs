@@ -1,17 +1,18 @@
-﻿using FinancialPortfolioConsoleApp.BL.Data.Repositories;
+﻿using FinancialPortfolioConsoleApp.BL.Contexts;
+using FinancialPortfolioConsoleApp.BL.Data.Repositories;
 using FinancialPortfolioConsoleApp.BL.Models;
 
 namespace FinancialPortfolioConsoleApp.BL.Services
 {
     public class AuthService
     {
-        public UserModel? CurrentUser { get; private set; }
-
         private readonly UserRepository _userRepository;
+        private readonly UserContext _userContext;
 
-        public AuthService(UserRepository userRepository)
+        public AuthService(UserRepository userRepository, UserContext userContext)
         {
             _userRepository = userRepository;
+            _userContext = userContext;
         }
         /// <summary>
         /// Регистрация нового пользователя.
@@ -46,11 +47,11 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     {
                         var hashPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-                        var newUser = new UserModel() { Name = name, Password = hashPassword };
+                        var newUser = new UserModel() { Name = name, Password = hashPassword, Role = UserRole.User };
                         _userRepository.Add(newUser);
                         Console.WriteLine($"Пользователь {newUser.Name} зарегистрирован!");
 
-                        CurrentUser = _userRepository.GetByName(name);
+                        _userContext.CurrentUser = _userRepository.GetByName(name);
                     }
                 }
             }
@@ -60,7 +61,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         /// Верификация.
         /// </summary>
         /// <returns>true - верификация прошла успешно. false - верификация не прошла.</returns>
-        public bool Login()
+        public void Login()
         {
             Console.WriteLine("Введите имя: ");
             var name = Console.ReadLine();
@@ -85,8 +86,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                     {
                         Console.WriteLine($"Добро пожаловать {user.Name}!");
-                        CurrentUser = user;
-                        return true;
+                        _userContext.CurrentUser = user;
                     }
                     else
                     {
@@ -94,21 +94,19 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     }
                 }
             }
-
-            return false;
         }
         /// <summary>
         /// Выйти из аккаунта.
         /// </summary>
         public void Logout()
         {
-            if (CurrentUser is null)
+            if (!_userContext.IsAuthenticated)
             {
                 Console.WriteLine("Перед тем как выходить, ты для начала зайди)");
             }
             else
             {
-                CurrentUser = null;
+                _userContext.CurrentUser = null;
             }
         }
 
