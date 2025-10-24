@@ -1,4 +1,5 @@
-﻿using FinancialPortfolioConsoleApp.BL.Data.Repositories;
+﻿using FinancialPortfolioConsoleApp.BL.Contexts;
+using FinancialPortfolioConsoleApp.BL.Data.Repositories;
 using FinancialPortfolioConsoleApp.BL.Models;
 
 namespace FinancialPortfolioConsoleApp.BL.Services
@@ -7,20 +8,14 @@ namespace FinancialPortfolioConsoleApp.BL.Services
     {
         private readonly UserRepository _userRepository;
         private readonly AuthService _authService;
+        private readonly UserContext _userContext;
 
-        public UserService(UserRepository userRepository, AuthService authService)
+        public UserService(UserRepository userRepository, AuthService authService, UserContext userContext)
         {
             _userRepository = userRepository;
             _authService = authService;
+            _userContext = userContext;
             Init();
-        }
-        /// <summary>
-        /// Получить текущего пользователя.
-        /// </summary>
-        /// <returns>Текущий пользователь.</returns>
-        public UserModel? GetCurrentUser()
-        {
-            return _authService.CurrentUser;
         }
         /// <summary>
         /// Добавить пользователя.
@@ -48,13 +43,20 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         /// </summary>
         public void RemoveUser()
         {
-            Console.WriteLine("Введите id пользователя, которого хотите удалить: ");
-            var idStr = Console.ReadLine();
-
-            if (int.TryParse(idStr, out int id))
+            if (_userContext.CurrentUser?.Role == UserRole.Admin)
             {
-                _userRepository.Remove(id);
-                Console.WriteLine();
+                Console.WriteLine("Введите id пользователя, которого хотите удалить: ");
+                var idStr = Console.ReadLine();
+
+                if (int.TryParse(idStr, out int id))
+                {
+                    _userRepository.Remove(id);
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Вы не можете удалять пользователей, у вас нет прав.");
             }
         }
         /// <summary>
@@ -95,7 +97,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             if (admin is null)
             {
                 var hashPassword = BCrypt.Net.BCrypt.HashPassword(adminName);
-                admin = new UserModel() { Name = adminName, Password = hashPassword };
+                admin = new UserModel() { Name = adminName, Password = hashPassword, Role = UserRole.Admin };
                 _userRepository.Add(admin);
             }
         }

@@ -1,4 +1,5 @@
-﻿using FinancialPortfolioConsoleApp.BL.Controllers;
+﻿using FinancialPortfolioConsoleApp.BL.Contexts;
+using FinancialPortfolioConsoleApp.BL.Controllers;
 using FinancialPortfolioConsoleApp.BL.Data;
 using FinancialPortfolioConsoleApp.BL.Data.Repositories;
 using FinancialPortfolioConsoleApp.BL.Services;
@@ -8,14 +9,24 @@ namespace FinancialPortfolioConsoleApp
     public class App
     {
         // Контексты.
-        private AppDbContext _appDbContext => new AppDbContext();
+        private AppDbContext _appDbContext;
+        private UserContext _userContext;
         // Репозитории.
-        private UserRepository _userRepository => new UserRepository(_appDbContext);
+        private UserRepository _userRepository;
         // Сервисы.
-        private AuthService _authService => new AuthService(_userRepository);
-        private UserService _userService => new UserService(_userRepository, _authService);
+        private AuthService _authService;
+        private UserService _userService;
         // Контроллеры.
-        private UserController _userController => new UserController(_userService);
+        private UserController _userController;
+        public App()
+        {
+            _appDbContext = new AppDbContext();
+            _userContext = new UserContext();
+            _userRepository = new UserRepository(_appDbContext);
+            _authService = new AuthService(_userRepository, _userContext);
+            _userService = new UserService(_userRepository, _authService, _userContext);
+            _userController = new UserController(_userService);
+        }
 
         /// <summary>
         /// Запустить приложение.
