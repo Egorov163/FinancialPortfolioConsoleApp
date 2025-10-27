@@ -15,7 +15,6 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             _userRepository = userRepository;
             _authService = authService;
             _userContext = userContext;
-            Init();
         }
         /// <summary>
         /// Добавить пользователя.
@@ -50,8 +49,14 @@ namespace FinancialPortfolioConsoleApp.BL.Services
 
                 if (int.TryParse(idStr, out int id))
                 {
-                    _userRepository.Remove(id);
-                    Console.WriteLine();
+                    if (_userRepository.Remove(id))
+                    {
+                        Console.WriteLine("Пользователь удалён.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Пользователя удалить не удалось, что-то пошло не так.");
+                    }
                 }
             }
             else
@@ -77,28 +82,6 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             else
             {
                 Console.WriteLine("Пользователи не найдены");
-            }
-        }
-        /// <summary>
-        /// Создать необходимых пользователей.
-        /// </summary>
-        private void Init()
-        {
-            CreateAdmin();
-        }
-        /// <summary>
-        /// Создать админа.
-        /// </summary>
-        private void CreateAdmin()
-        {
-            var adminName = "admin";
-            var admin = _userRepository.GetByName(adminName);
-
-            if (admin is null)
-            {
-                var hashPassword = BCrypt.Net.BCrypt.HashPassword(adminName);
-                admin = new UserModel() { Name = adminName, Password = hashPassword, Role = UserRole.Admin };
-                _userRepository.Add(admin);
             }
         }
     }

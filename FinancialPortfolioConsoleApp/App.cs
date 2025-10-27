@@ -2,6 +2,7 @@
 using FinancialPortfolioConsoleApp.BL.Controllers;
 using FinancialPortfolioConsoleApp.BL.Data;
 using FinancialPortfolioConsoleApp.BL.Data.Repositories;
+using FinancialPortfolioConsoleApp.BL.Helpers;
 using FinancialPortfolioConsoleApp.BL.Services;
 
 namespace FinancialPortfolioConsoleApp
@@ -9,15 +10,15 @@ namespace FinancialPortfolioConsoleApp
     public class App
     {
         // Контексты.
-        private AppDbContext _appDbContext;
-        private UserContext _userContext;
+        private readonly AppDbContext _appDbContext;
+        private readonly UserContext _userContext;
         // Репозитории.
-        private UserRepository _userRepository;
+        private readonly UserRepository _userRepository;
         // Сервисы.
-        private AuthService _authService;
-        private UserService _userService;
+        private readonly AuthService _authService;
+        private readonly UserService _userService;
         // Контроллеры.
-        private UserController _userController;
+        private readonly UserController _userController;
         public App()
         {
             _appDbContext = new AppDbContext();
@@ -26,6 +27,9 @@ namespace FinancialPortfolioConsoleApp
             _authService = new AuthService(_userRepository, _userContext);
             _userService = new UserService(_userRepository, _authService, _userContext);
             _userController = new UserController(_userService);
+
+            // Инициализация
+            Initialization.AppInit(_userRepository);
         }
 
         /// <summary>
@@ -47,6 +51,8 @@ namespace FinancialPortfolioConsoleApp
 
                 if (int.TryParse(Console.ReadLine(), out int result))
                 {
+                    Console.WriteLine();
+
                     switch (result)
                     {
                         case 1:
