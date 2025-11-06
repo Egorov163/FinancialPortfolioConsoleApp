@@ -1,6 +1,6 @@
 ﻿namespace FinancialPortfolioConsoleApp.BL.Models
 {
-    public enum UserRole
+    public enum UserRoleEnum
     {
         Admin,
         User

@@ -18,7 +18,12 @@ namespace FinancialPortfolioConsoleApp.BL.Helpers
             if (admin is null)
             {
                 var hashPassword = BCrypt.Net.BCrypt.HashPassword(adminName);
-                admin = new UserModel() { Name = adminName, Password = hashPassword, Role = UserRole.Admin };
+                admin = new UserModel() 
+                {
+                    Name = adminName, 
+                    Password = hashPassword, 
+                    Role = UserRoleEnum.Admin,
+                };
                 userRepository.Add(admin);
             }
         }
@@ -30,7 +35,12 @@ namespace FinancialPortfolioConsoleApp.BL.Helpers
             if (user is null)
             {
                 var hashPassword = BCrypt.Net.BCrypt.HashPassword(userName);
-                user = new UserModel() { Name = userName, Password = hashPassword, Role = UserRole.User };
+                user = new UserModel()
+                {
+                    Name = userName,
+                    Password = hashPassword,
+                    Role = UserRoleEnum.User
+                };
                 userRepository.Add(user);
             }
         }

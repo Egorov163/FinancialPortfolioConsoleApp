@@ -42,7 +42,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         /// </summary>
         public void RemoveUser()
         {
-            if (_userContext.CurrentUser?.Role == UserRole.Admin)
+            if (_userContext.CurrentUser?.Role == UserRoleEnum.Admin)
             {
                 Console.WriteLine("Введите id пользователя, которого хотите удалить: ");
                 var idStr = Console.ReadLine();

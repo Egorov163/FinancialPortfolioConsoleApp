@@ -4,6 +4,7 @@
     {
         public required string Name { get; set; }
         public required string Password { get; set; }
-        public required UserRole Role { get; set; }
+        public required UserRoleEnum Role { get; set; }
+        public  List<PortfolioModel>? Portfolios { get; set; } = new();
     }
 }

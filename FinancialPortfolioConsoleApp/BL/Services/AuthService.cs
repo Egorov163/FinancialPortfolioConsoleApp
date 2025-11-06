@@ -47,7 +47,12 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     {
                         var hashPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-                        var newUser = new UserModel() { Name = name, Password = hashPassword, Role = UserRole.User };
+                        var newUser = new UserModel() 
+                        { 
+                            Name = name, 
+                            Password = hashPassword, 
+                            Role = UserRoleEnum.User,
+                        };
                         _userRepository.Add(newUser);
                         Console.WriteLine($"Пользователь {newUser.Name} зарегистрирован!");
 

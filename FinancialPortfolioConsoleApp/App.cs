@@ -14,19 +14,38 @@ namespace FinancialPortfolioConsoleApp
         private readonly UserContext _userContext;
         // Репозитории.
         private readonly UserRepository _userRepository;
+        private readonly PortfolioRepository _portfolioRepository;
+        private readonly PortfolioStocksRepository _portfolioStocksRepository;
+        private readonly StockRepository _stockRepository;
         // Сервисы.
         private readonly AuthService _authService;
         private readonly UserService _userService;
+        private readonly StockService _stockService;
+        private readonly PortfolioService _portfolioService;
+        private readonly PortfolioStocksService _portfolioStocksService;
         // Контроллеры.
         private readonly UserController _userController;
+        private readonly FinancialController _financialController;
         public App()
         {
+            // Контексты.
             _appDbContext = new AppDbContext();
             _userContext = new UserContext();
+            // Репозитории.
             _userRepository = new UserRepository(_appDbContext);
+            _portfolioRepository = new PortfolioRepository(_appDbContext);
+            _portfolioStocksRepository = new PortfolioStocksRepository(_appDbContext);
+            _stockRepository = new StockRepository(_appDbContext);
+            // Сервисы.
             _authService = new AuthService(_userRepository, _userContext);
             _userService = new UserService(_userRepository, _authService, _userContext);
+            _stockService = new StockService(_stockRepository, _portfolioStocksRepository);
+            _portfolioStocksService = new PortfolioStocksService(_stockService, _portfolioStocksRepository);
+            _portfolioService = new PortfolioService(_userContext, _stockService, _portfolioStocksService, _portfolioRepository  );
+            // Контроллеры.
             _userController = new UserController(_userService);
+            _financialController = new FinancialController(_portfolioService);
+
 
             // Инициализация
             Initialization.AppInit(_userRepository);
@@ -40,6 +59,103 @@ namespace FinancialPortfolioConsoleApp
             Console.WriteLine("Вас приветствует приложение Финансовый портфель!");
 
             while (true)
+            {
+                Console.WriteLine("С каким модулем вы хотите взаимодействовать?\nВыберите действие: ");
+
+                Console.WriteLine("1 - пользователи");
+                Console.WriteLine("2 - финансовый портфель");
+                Console.WriteLine("3 - выйти");
+
+                if (int.TryParse(Console.ReadLine(), out int result))
+                {
+                    Console.WriteLine();
+
+                    switch (result)
+                    {
+                        case 1:
+                            UsersAction();
+                            break;
+
+                        case 2:
+                            PortfolioAction();
+                            break;
+
+                        case 3:
+                            Environment.Exit(0);
+                            break;
+
+                        default:
+                            Console.WriteLine("Ничего не понял, попробуй ещё раз");
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void PortfolioAction()
+        {
+            Console.WriteLine("Модуль: Финансовый портфель");
+            bool exit = false;
+
+            while (!exit)
+            {
+                Console.WriteLine("Выберите действие: ");
+                Console.WriteLine("1 - добавить акции");
+                Console.WriteLine("2 - удалить акции");
+                Console.WriteLine("3 - вывести все акции");
+                Console.WriteLine("4 - добавить портфель");
+                Console.WriteLine("5 - удалить портфель");
+                Console.WriteLine("6 - выйти");
+
+                if (int.TryParse(Console.ReadLine(), out int result))
+                {
+                    Console.WriteLine();
+
+                    switch (result)
+                    {
+                        case 1:
+                            _financialController.AddStocks();
+                            break;
+
+                        case 2:
+                            Console.WriteLine("Ещё не готово!");
+                            break;
+
+                        case 3:
+                            Console.WriteLine("Ещё не готово!");
+                            break;
+
+                        case 4:
+                            _financialController.AddPortfolio();
+                            break;
+
+                        case 5:
+                            Console.WriteLine("Ещё не готово!");
+                            break;
+
+                        case 6:
+                            exit = true;
+                            break;
+
+                        default:
+                            Console.WriteLine("Ничего не понял, попробуй ещё раз");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Введите корректный ответ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        private void UsersAction()
+        {
+            Console.WriteLine("Модуль: Пользователи");
+            bool exit = false;
+
+            while (!exit)
             {
                 Console.WriteLine("Выберите действие: ");
                 Console.WriteLine("1 - создать пользователя");
@@ -76,7 +192,7 @@ namespace FinancialPortfolioConsoleApp
                             break;
 
                         case 6:
-                            Environment.Exit(0);
+                            exit = true;
                             break;
 
                         default:
