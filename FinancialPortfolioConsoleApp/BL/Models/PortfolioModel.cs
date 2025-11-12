@@ -1,5 +1,8 @@
 ﻿namespace FinancialPortfolioConsoleApp.BL.Models
 {
+    /// <summary>
+    /// Модель портфеля.
+    /// </summary>
     public class PortfolioModel : BaseModel
     {
         public required string Name { get; set; }

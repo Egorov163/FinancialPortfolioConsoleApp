@@ -8,14 +8,14 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         private readonly StockService _stockService;
         private readonly PortfolioStocksRepository _portfolioStocksRepository;
 
-        public PortfolioStocksService(StockService stockService, 
+        public PortfolioStocksService(StockService stockService,
             PortfolioStocksRepository portfolioStocksRepository)
         {
             _stockService = stockService;
             _portfolioStocksRepository = portfolioStocksRepository;
         }
 
-        public PortfolioStocksModel? AddStock(PortfolioModel portfolio)
+        public PortfolioStocksModel? AddPortfolioStock(PortfolioModel portfolio)
         {
             var stock = _stockService.AddStock(portfolio);
 
@@ -42,7 +42,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
 
                         if (portfolioStock is null)
                         {
-                             portfolioStock = new PortfolioStocksModel()
+                            portfolioStock = new PortfolioStocksModel()
                             {
                                 Stock = stock,
                                 StockId = stock.Id,
@@ -57,12 +57,10 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                         }
                         else
                         {
-                            portfolioStock.AveragePrice = price;
-                            portfolioStock.Count += count;
                             _portfolioStocksRepository.UpdatePortfolioStock(portfolioStock, price, count);
 
                             return null;
-                        }                        
+                        }
                     }
                     else
                     {
@@ -75,8 +73,17 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     Console.WriteLine("Вы не ввели цену.");
                     return null;
                 }
-
             }
+        }
+
+        public List<StockModelDto> GetAllStockModelDtoById(int idPortfolio)
+        {
+            return _portfolioStocksRepository.GetAllStockModelDtoById(idPortfolio);
+        }
+
+        public void RemoveStocksFromPortfolio()
+        {
+
         }
     }
 }

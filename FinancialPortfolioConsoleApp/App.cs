@@ -26,6 +26,10 @@ namespace FinancialPortfolioConsoleApp
         // Контроллеры.
         private readonly UserController _userController;
         private readonly FinancialController _financialController;
+
+        /// <summary>
+        /// Создать приложение.
+        /// </summary>
         public App()
         {
             // Контексты.
@@ -41,7 +45,7 @@ namespace FinancialPortfolioConsoleApp
             _userService = new UserService(_userRepository, _authService, _userContext);
             _stockService = new StockService(_stockRepository, _portfolioStocksRepository);
             _portfolioStocksService = new PortfolioStocksService(_stockService, _portfolioStocksRepository);
-            _portfolioService = new PortfolioService(_userContext, _stockService, _portfolioStocksService, _portfolioRepository  );
+            _portfolioService = new PortfolioService(_userContext, _stockService, _portfolioStocksService, _portfolioRepository);
             // Контроллеры.
             _userController = new UserController(_userService);
             _financialController = new FinancialController(_portfolioService);
@@ -91,7 +95,9 @@ namespace FinancialPortfolioConsoleApp
                 }
             }
         }
-
+        /// <summary>
+        /// Действия с финансовым портфелем.
+        /// </summary>
         private void PortfolioAction()
         {
             Console.WriteLine("Модуль: Финансовый портфель");
@@ -105,7 +111,8 @@ namespace FinancialPortfolioConsoleApp
                 Console.WriteLine("3 - вывести все акции");
                 Console.WriteLine("4 - добавить портфель");
                 Console.WriteLine("5 - удалить портфель");
-                Console.WriteLine("6 - выйти");
+                Console.WriteLine("6 - вывести все портфели");
+                Console.WriteLine("7 - выйти");
 
                 if (int.TryParse(Console.ReadLine(), out int result))
                 {
@@ -118,11 +125,11 @@ namespace FinancialPortfolioConsoleApp
                             break;
 
                         case 2:
-                            Console.WriteLine("Ещё не готово!");
+                            _financialController.RemoveStocks();
                             break;
 
                         case 3:
-                            Console.WriteLine("Ещё не готово!");
+                            _financialController.ReadAllStocks();
                             break;
 
                         case 4:
@@ -130,10 +137,14 @@ namespace FinancialPortfolioConsoleApp
                             break;
 
                         case 5:
-                            Console.WriteLine("Ещё не готово!");
+                            _financialController.RemovePortfolio();
                             break;
 
                         case 6:
+                            _financialController.GetAllPortfolios();
+                            break;
+
+                        case 7:
                             exit = true;
                             break;
 
@@ -150,6 +161,9 @@ namespace FinancialPortfolioConsoleApp
             }
         }
 
+        /// <summary>
+        /// Действия с пользователями.
+        /// </summary>
         private void UsersAction()
         {
             Console.WriteLine("Модуль: Пользователи");

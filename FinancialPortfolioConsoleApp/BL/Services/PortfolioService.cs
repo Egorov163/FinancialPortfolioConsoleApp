@@ -4,6 +4,9 @@ using FinancialPortfolioConsoleApp.BL.Models;
 
 namespace FinancialPortfolioConsoleApp.BL.Services
 {
+    /// <summary>
+    /// Сервис по действиям с портфелем.
+    /// </summary>
     public class PortfolioService
     {
         private readonly UserContext _userContext;
@@ -61,14 +64,42 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             }
         }
 
-        /// <summary>
-        /// Добавить акцию.
-        /// </summary>
-        public void AddStocks()
+        public void GetAllPortfolio()
         {
-            if (_userContext.CurrentUser != null)
+            var currentUser = _userContext.CurrentUser;
+
+            if (currentUser is not null)
             {
-                var portfoliosList = _userContext.CurrentUser.Portfolios;
+                var portfolioList = _portfolioRepository.GetPortfoliosByUserId(currentUser.Id);
+
+                if (portfolioList.Any())
+                {
+                    foreach (var portfolio in portfolioList)
+                    {
+                        Console.WriteLine(portfolio.Name);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Ещй ни один портфель не добавлен");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Дружище, ты куда спешишь? Для начала зайди под пользователем)");
+            }
+        }
+
+        /// <summary>
+        /// Добавить акцию в портфель.
+        /// </summary>
+        public void AddStockInPortfolio()
+        {
+            var currentUser = _userContext.CurrentUser;
+
+            if (currentUser is not null)
+            {
+                var portfoliosList = _portfolioRepository.GetPortfoliosByUserId(currentUser.Id);
 
                 Console.WriteLine("В какой портфель вы хотите добавить акции?");
 
@@ -87,11 +118,11 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                 }
                 else
                 {
-                    var newPortfolioStock = _portfolioStocksService.AddStock(portfolio);
+                    var portfolioStock = _portfolioStocksService.AddPortfolioStock(portfolio);
 
-                    if (newPortfolioStock is not null)
+                    if (portfolioStock is not null)
                     {
-                        _portfolioRepository.AddInPortfolioStock(portfolio, newPortfolioStock);
+                        _portfolioRepository.AddInPortfolioStock(portfolio, portfolioStock);
                     }
                 }
 
@@ -100,6 +131,84 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             {
                 Console.WriteLine("Дружище, ты куда спешишь? Для начала зайди под пользователем)");
             }
+        }
+
+        public void ReadAllStocksFromPortfolio()
+        {
+            var currentUser = _userContext.CurrentUser;
+
+            if (currentUser is not null)
+            {
+                var portfoliosList = _portfolioRepository.GetPortfoliosByUserId(currentUser.Id);
+
+                Console.WriteLine("Из какого портфеля вы хотите показать акции?");
+
+                foreach (var p in portfoliosList)
+                {
+                    Console.WriteLine(p.Name);
+                }
+
+                var portfolioName = Console.ReadLine();
+
+                var portfolio = portfoliosList.FirstOrDefault(p => p.Name == portfolioName);
+
+                if (portfolio is null)
+                {
+                    Console.WriteLine("Вы не указали портфель");
+                }
+                else
+                {
+                    var stocksDto = _portfolioStocksService.GetAllStockModelDtoById(portfolio.Id);
+
+                    foreach (var s in stocksDto)
+                    {
+                        Console.WriteLine($"Тикер - {s.Ticker} {s.Count}шт. цена {s.Price}р");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Дружище, ты куда спешишь? Для начала зайди под пользователем)");
+            }
+        }
+
+        public void RemovePortfolio()
+        {
+            var currentUser = _userContext.CurrentUser;
+
+            if (currentUser is not null)
+            {
+                var portfoliosList = _portfolioRepository.GetPortfoliosByUserId(currentUser.Id);
+
+                Console.WriteLine("Какой портфель вы хотите удалить?");
+
+                foreach (var p in portfoliosList)
+                {
+                    Console.WriteLine(p.Name);
+                }
+
+                var portfolioName = Console.ReadLine();
+
+                var portfolio = portfoliosList.FirstOrDefault(p => p.Name == portfolioName);
+
+                if (portfolio is null)
+                {
+                    Console.WriteLine("Вы не указали портфель");
+                }
+                else
+                {
+                    _portfolioRepository.Remove(portfolio.Id);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Дружище, ты куда спешишь? Для начала зайди под пользователем)");
+            }
+        }
+
+        public void RemoveStocksFromPortfolio()
+        {
+            
         }
     }
 }

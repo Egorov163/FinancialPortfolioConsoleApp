@@ -1,4 +1,5 @@
 ﻿using FinancialPortfolioConsoleApp.BL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancialPortfolioConsoleApp.BL.Data.Repositories
 {
@@ -17,6 +18,14 @@ namespace FinancialPortfolioConsoleApp.BL.Data.Repositories
         public bool CheckPortfolioByName(int idUser, string namePortfolio)
         {
             return _appDbContext.Portfolios.Any(p => p.Name == namePortfolio && p.User.Id == idUser);
+        }
+
+        public List<PortfolioModel> GetPortfoliosByUserId(int id)
+        {
+            return _appDbContext.Portfolios
+                .Where(p => p.UserId == id)
+                .Include(p => p.PortfolioStocks)
+                .ToList();
         }
     }
 }

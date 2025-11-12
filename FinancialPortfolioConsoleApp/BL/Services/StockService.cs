@@ -15,6 +15,11 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             _portfolioStocksRepository = portfolioStocksRepository;
         }
 
+        /// <summary>
+        /// Добавить акцию. Ищет акцию по названию, если не находит, создаёт новую.
+        /// </summary>
+        /// <param name="portfolio">Портфель</param>
+        /// <returns>Акция</returns>
         public StockModel? AddStock(PortfolioModel portfolio)
         {
             Console.WriteLine("Введите тикер акции: ");
