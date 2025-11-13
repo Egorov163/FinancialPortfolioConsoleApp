@@ -48,14 +48,33 @@ namespace Ui
 
         }
 
-        private void AuthButton_Click(object sender, EventArgs e)
+        private void AuthToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new LoginForm(_authService);
             form.ShowDialog();
+            var currentUser = _userContext.CurrentUser;
 
-            if (_userContext.CurrentUser is not null)
+            if (currentUser is not null)
             {
-                AuthLabel.Text = _userContext.CurrentUser.Name;
+                AuthLabel.Text = $"Вы вошли под пользователем - {currentUser.Name}";
+                Update();
+            }
+        }
+
+        private void AuthLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RegistrationUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new RegForm(_authService);
+            form.ShowDialog();
+            var currentUser = _userContext.CurrentUser;
+
+            if (currentUser is not null)
+            {
+                AuthLabel.Text = $"Вы вошли под пользователем - {currentUser.Name}";
                 Update();
             }
         }

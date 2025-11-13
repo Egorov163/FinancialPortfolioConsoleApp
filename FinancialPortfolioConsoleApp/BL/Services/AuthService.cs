@@ -17,7 +17,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         /// <summary>
         /// Регистрация нового пользователя.
         /// </summary>
-        public void Registration()
+        public bool Registration()
         {
             Console.WriteLine("Введите имя: ");
             var name = Console.ReadLine();
@@ -25,14 +25,14 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             if (string.IsNullOrWhiteSpace(name))
             {
                 Console.WriteLine("Вы не указали имя");
+                return false;
             }
             else
             {
-                var user = _userRepository.GetByName(name);
-
-                if (user is not null)
+                if (_userRepository.CheckByName(name))
                 {
                     Console.WriteLine($"Пользователь с {name} уже существует");
+                    return false;
                 }
                 else
                 {
@@ -42,6 +42,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     if (string.IsNullOrWhiteSpace(password))
                     {
                         Console.WriteLine("Вы не указали пароль");
+                        return false;
                     }
                     else
                     {
@@ -57,7 +58,43 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                         Console.WriteLine($"Пользователь {newUser.Name} зарегистрирован!");
 
                         _userContext.CurrentUser = _userRepository.GetByName(name);
+
+                        return true;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Регистрация нового пользователя.
+        /// </summary>
+        public bool Registration(string name, string password)
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))
+            {
+                return false;
+            }
+            else
+            {
+                if (_userRepository.CheckByName(name))
+                {
+                    return false;
+                }
+                else
+                {
+                    var hashPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+                    var newUser = new UserModel()
+                    {
+                        Name = name,
+                        Password = hashPassword,
+                        Role = UserRoleEnum.User,
+                    };
+
+                    _userRepository.Add(newUser);
+                    _userContext.CurrentUser = _userRepository.GetByName(name);
+
+                    return true;
                 }
             }
         }
@@ -129,7 +166,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                 }
             }
         }
-        
+
         /// <summary>
         /// Выйти из аккаунта.
         /// </summary>

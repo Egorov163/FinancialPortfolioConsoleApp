@@ -18,5 +18,15 @@ namespace FinancialPortfolioConsoleApp.BL.Data.Repositories
         {
             return _entities.FirstOrDefault(x => x.Name == name);
         }
+
+        /// <summary>
+        /// Проверить, есть ли пользователь с таким именем.
+        /// </summary>
+        /// <param name="name">Имя пользователя.</param>
+        /// <returns>true - есть / false - нет</returns>
+        public bool CheckByName(string name)
+        {
+            return _entities.Any(x => x.Name == name);
+        }
     }
 }

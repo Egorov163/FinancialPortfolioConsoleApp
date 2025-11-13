@@ -39,14 +39,14 @@
             // 
             LoginTextBox.Location = new Point(80, 6);
             LoginTextBox.Name = "LoginTextBox";
-            LoginTextBox.Size = new Size(125, 27);
+            LoginTextBox.Size = new Size(336, 27);
             LoginTextBox.TabIndex = 0;
             // 
             // PasswordTextBox
             // 
             PasswordTextBox.Location = new Point(80, 46);
             PasswordTextBox.Name = "PasswordTextBox";
-            PasswordTextBox.Size = new Size(125, 27);
+            PasswordTextBox.Size = new Size(336, 27);
             PasswordTextBox.TabIndex = 1;
             PasswordTextBox.UseSystemPasswordChar = true;
             // 
