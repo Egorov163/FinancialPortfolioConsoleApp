@@ -47,10 +47,10 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     {
                         var hashPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-                        var newUser = new UserModel() 
-                        { 
-                            Name = name, 
-                            Password = hashPassword, 
+                        var newUser = new UserModel()
+                        {
+                            Name = name,
+                            Password = hashPassword,
                             Role = UserRoleEnum.User,
                         };
                         _userRepository.Add(newUser);
@@ -65,8 +65,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
         /// <summary>
         /// Верификация.
         /// </summary>
-        /// <returns>true - верификация прошла успешно. false - верификация не прошла.</returns>
-        public void Login()
+        public bool Login()
         {
             Console.WriteLine("Введите имя: ");
             var name = Console.ReadLine();
@@ -74,6 +73,8 @@ namespace FinancialPortfolioConsoleApp.BL.Services
             if (string.IsNullOrWhiteSpace(name))
             {
                 Console.WriteLine("Вы не указали имя");
+
+                return false;
             }
             else
             {
@@ -82,6 +83,7 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                 if (user is null)
                 {
                     Console.WriteLine($"Пользователь с именем {name} не найден");
+                    return false;
                 }
                 else
                 {
@@ -92,14 +94,42 @@ namespace FinancialPortfolioConsoleApp.BL.Services
                     {
                         Console.WriteLine($"Добро пожаловать {user.Name}!");
                         _userContext.CurrentUser = user;
+                        return true;
                     }
                     else
                     {
                         Console.WriteLine("Неверный пароль");
+                        return false;
                     }
                 }
             }
         }
+        /// <summary>
+        /// Верификация.
+        /// </summary>
+        /// <returns>true - верификация прошла успешно. false - верификация не прошла.</returns>
+        public bool Login(string name, string password)
+        {
+            var user = _userRepository.GetByName(name);
+
+            if (user is null)
+            {
+                return false;
+            }
+            else
+            {
+                if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    _userContext.CurrentUser = user;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        
         /// <summary>
         /// Выйти из аккаунта.
         /// </summary>

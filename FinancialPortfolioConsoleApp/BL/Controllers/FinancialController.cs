@@ -51,5 +51,10 @@ namespace FinancialPortfolioConsoleApp.BL.Controllers
         {
             _portfolioService.RemovePortfolio();
         }
+
+        internal void RemoveStocks()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
